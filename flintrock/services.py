@@ -422,7 +422,7 @@ class SparkNoteBook(FlintrockService):
     #       stuff out of configure() into configure_master() and configure_slave().
     #       start_slave() can block until slave is fully up; that way we don't need
     #       a sleep() before starting the master.
-    def configure_master:
+    def configure_master():
         pass
     # def configure_master(
     #         self,
