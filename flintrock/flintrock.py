@@ -22,7 +22,7 @@ from .exceptions import (
     NothingToDo,
     Error)
 from flintrock import __version__
-from .services import HDFS, Spark  # TODO: Remove this dependency.
+from .services import HDFS, Spark, SparkNoteBook  # TODO: Remove this dependency.
 
 FROZEN = getattr(sys, 'frozen', False)
 
@@ -186,6 +186,11 @@ def cli(cli_context, config, provider):
               help="URL to download Hadoop from.",
               default='http://www.apache.org/dyn/closer.lua/hadoop/common/hadoop-{v}/hadoop-{v}.tar.gz?as_json',
               show_default=True)
+@click.option('--install-spark-notebook/--no-install-spark-notebook', default=True)
+@click.option('--spark-notebook-download-source',
+              help="URL to download a release of Spark Notebookfrom.",
+              default='https://s3.eu-central-1.amazonaws.com/spark-notebook/tgz/spark-notebook-0.6.3-scala-2.10.5-spark-1.6.2-hadoop-2.7.2-with-hive-with-parquet.tgz',
+              show_default=True)
 @click.option('--install-spark/--no-install-spark', default=True)
 @click.option('--spark-version',
               help="Spark release version to install.")
@@ -234,6 +239,8 @@ def launch(
         install_hdfs,
         hdfs_version,
         hdfs_download_source,
+        install_spark_notebook,
+        spark_notebook_download_source,
         install_spark,
         spark_version,
         spark_git_commit,
@@ -315,8 +322,12 @@ def launch(
                 git_repository=spark_git_repository)
         services += [spark]
 
+    if install_spark_notebook:
+        spark_notebook = SparkNoteBook(download_source=spark_notebook_download_source)
+        services += [spark_notebook]
+
     if provider == 'ec2':
-        return ec2.launch(
+            return ec2.launch(
             cluster_name=cluster_name,
             num_slaves=num_slaves,
             services=services,
