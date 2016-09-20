@@ -397,85 +397,17 @@ class SparkNoteBook(FlintrockService):
             print(e, file=sys.stderr)
             raise
 
-    # def configure(
-    #         self,
-    #         ssh_client: paramiko.client.SSHClient,
-    #         cluster: FlintrockCluster):
-    #     template_paths = [
-    #         'spark/conf/spark-env.sh',
-    #         'spark/conf/slaves']
-    #     for template_path in template_paths:
-    #         ssh_check_output(
-    #             client=ssh_client,
-    #             command="""
-    #                 echo {f} > {p}
-    #             """.format(
-    #                 f=shlex.quote(
-    #                     get_formatted_template(
-    #                         path=os.path.join(THIS_DIR, "templates", template_path),
-    #                         mapping=cluster.generate_template_mapping(service='spark'))),
-    #                 p=shlex.quote(template_path)))
-
-    def configure():
+    def install(
+            self,
+            ssh_client: paramiko.client.SSHClient,
+            cluster: FlintrockCluster):
         pass
 
-    # TODO: Convert this into start_master() and split master- or slave-specific
-    #       stuff out of configure() into configure_master() and configure_slave().
-    #       start_slave() can block until slave is fully up; that way we don't need
-    #       a sleep() before starting the master.
-    def configure_master():
+    def configure(
+            self,
+            ssh_client: paramiko.client.SSHClient,
+            cluster: FlintrockCluster):
         pass
-    # def configure_master(
-    #         self,
-    #         ssh_client: paramiko.client.SSHClient,
-    #         cluster: FlintrockCluster):
-    #     host = ssh_client.get_transport().getpeername()[0]
-    #     print("[{h}] Configuring Spark master...".format(h=host))
 
-    #     # TODO: Maybe move this shell script out to some separate file/folder
-    #     #       for the Spark service.
-    #     # TODO: Add some timeout for waiting on master UI to come up.
-    #     ssh_check_output(
-    #         client=ssh_client,
-    #         command="""
-    #             spark/sbin/start-all.sh
-
-    #             master_ui_response_code=0
-    #             while [ "$master_ui_response_code" -ne 200 ]; do
-    #                 sleep 1
-    #                 master_ui_response_code="$(
-    #                     curl --head --silent --output /dev/null \
-    #                          --write-out "%{{http_code}}" {m}:8080
-    #                 )"
-    #             done
-    #         """.format(
-    #             m=shlex.quote(cluster.master_host)))
-
-    def health_check():
+    def health_check(self, master_host: str):
         pass
-    # def health_check(self, master_host: str):
-    #     spark_master_ui = 'http://{m}:8080/json/'.format(m=master_host)
-
-    #     try:
-    #         spark_ui_info = json.loads(
-    #             urllib.request.urlopen(spark_master_ui).read().decode('utf-8'))
-    #     except Exception as e:
-    #         # TODO: Catch a more specific problem known to be related to Spark not
-    #         #       being up; provide a slightly better error message, and don't
-    #         #       dump a large stack trace on the user.
-    #         print("Spark health check failed.", file=sys.stderr)
-    #         raise
-
-    #     # TODO: Don't print here. Return this and let the caller print.
-    #     print(textwrap.dedent(
-    #         """\
-    #         Spark Health Report:
-    #           * Master: {status}
-    #           * Workers: {workers}
-    #           * Cores: {cores}
-    #           * Memory: {memory:.1f} GB\
-    #         """.format(
-    #             status=spark_ui_info['status'],
-    #             workers=len(spark_ui_info['workers']),
-    #             cores=spark_ui_info['cores'],
-    #             memory=spark_ui_info['memory'] / 1024)))
