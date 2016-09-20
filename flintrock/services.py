@@ -361,13 +361,14 @@ class Spark(FlintrockService):
 
 
 class SparkNoteBook(FlintrockService):
-    def __init__(self, download_source: str=None):
+    def __init__(self, version: str=None, download_source: str=None,
+                 git_commit: str=None, git_repository: str=None):
 
         self.download_source = download_source
 
         self.manifest = {'download_source': download_source}
 
-    def install(
+    def configure_master(
             self,
             ssh_client: paramiko.client.SSHClient,
             cluster: FlintrockCluster):
