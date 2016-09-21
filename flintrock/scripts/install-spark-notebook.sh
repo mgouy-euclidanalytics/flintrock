@@ -37,3 +37,4 @@ tar xzf "$file" -C "spark-notebook" --strip-components=1
 rm "$file"
 
 screen -d -m -S notebook bash -c 'cd $HOME/spark-notebook/bin && ./spark-notebook -Dhttp.port=8081'
+sleep 5
