@@ -368,12 +368,9 @@ class SparkNoteBook(FlintrockService):
 
         self.manifest = {'download_source': download_source}
 
-    def configure_master(
-            self,
-            ssh_client: paramiko.client.SSHClient,
-            cluster: FlintrockCluster):
+    def configure_master(self, ssh_client: paramiko.client.SSHClient, cluster: FlintrockCluster):
 
-        print("[{h}] Installing SparkNoteBook...".format(
+        print("[{h}] Installing SparkNoteBook on master...".format(
             h=ssh_client.get_transport().getpeername()[0]))
 
         try:
